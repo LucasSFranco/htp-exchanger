@@ -14,7 +14,7 @@ function toSelection(range: vscode.Range): vscode.Selection {
     )
 }
 
-export function exchange() {
+export function exchange(type: 'p' | 'prn') {
     const editor = vscode.window.activeTextEditor
 
     const { document, selections } = editor
@@ -27,17 +27,17 @@ export function exchange() {
                 let range = document.lineAt(line).range
                 const text = range ? document.getText(range) : undefined
 
-                if(/^[ \t]*$/.test(text)) continue
+                if (/^[ \t]*$/.test(text)) continue
 
                 let offset: number
                 let newText: string
-            
-                if (/htp.prn\('.*'\);/g.test(text)) {
-                    offset = (s.start.character >= 9 && s.end.character <= text.length - 3) ? -9 : 0
-                    newText = text.replace(/htp.prn\('(.*)'\);/g, '$1').replace(/''/g, "'")
+
+                if ((new RegExp(`htp.${type}\\('.*'\\);`, 'g')).test(text)) {
+                    offset = (s.start.character >= (type === 'prn' ? 9 : 7) && s.end.character <= text.length - 3) ? (type === 'prn' ? -9 : -7) : 0
+                    newText = text.replace((new RegExp(`htp.${type}\\('(.*)'\\);`, 'g')), '$1').replace(/''/g, "'")
                 } else {
-                    offset = 9
-                    newText = text.replace(/'/g, "''").replace(/([ \t]*)(.+)/g, "$1htp.prn('$2');")
+                    offset = (type === 'prn' ? 9 : 7)
+                    newText = text.replace(/'/g, "''").replace(/([ \t]*)(.+)/g, `$1htp.${type}('$2');`)
                 }
 
                 replacements.push({
@@ -49,7 +49,7 @@ export function exchange() {
                         s.end.line, s.end.character + offset
                     )
                 })
-                
+
             }
         })
 

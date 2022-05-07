@@ -1,7 +1,7 @@
 {
 	"name": "htp-exchanger",
 	"displayName": "HTP Exchanger",
-	"description": "VSCode Extension to add/remove htp.prn procedure in PL/SQL code.",
+	"description": "VSCode Extension to add/remove htp.prn/htp.p procedure in PL/SQL code.",
 	"publisher": "LucasSFranco",
 	"version": "1.0.0",
 	"engines": {
@@ -11,14 +11,19 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:htp-exchanger.exchange"
+		"onCommand:htp-exchanger.exchange-prn",
+		"onCommand:htp-exchanger.exchange-p"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "htp-exchanger.exchange",
-				"title": "Exchange"
+				"command": "htp-exchanger.exchange-prn",
+				"title": "Exchange htp.prn"
+			},
+			{
+				"command": "htp-exchanger.exchange-p",
+				"title": "Exchange htp.p"
 			}
 		]
 	},
